@@ -91,7 +91,7 @@ async def convert_p_goofish_link(p_url: str) -> str | None:
                 location = resp.headers.get("Location")
                 if not location:
                     return None
-            
+
             parsed = urlparse(location)
             query_params = parse_qs(parsed.query)
 
@@ -117,8 +117,10 @@ class MyClient(discord.Client):
 
         # Ping
         if client.user.mentioned_in(message):
-            print(f"ℹ️ Activity: Gm. From: {message.author}.")
-            await message.channel.send("Gm")
+            hour = message.created_at.hour  # UTC
+            greeting = "Gn" if hour >= 18 or hour < 6 else "Gm"
+            print(f"ℹ️ Activity: {greeting}. From: {message.author}.")
+            await message.channel.send(greeting)
 
         # No bot processing
         if message.author == self.user:
@@ -170,7 +172,7 @@ class MyClient(discord.Client):
                     else:
                         await message.channel.send(f"{message.author.mention} ⚠️ Invalid or unsupported goofish URL.")
                     return
-                    
+
             # Execute m.tb.cn conversion
             elif "m.tb.cn" in url:
                 await message.edit(suppress=True)
